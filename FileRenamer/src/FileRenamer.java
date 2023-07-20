@@ -56,6 +56,7 @@ public class FileRenamer {
                 } else if (file.isDirectory()) {
                     // Recursively process nested directories
                     renameFiles(file, extension, action);
+
                 }
             }
         }
