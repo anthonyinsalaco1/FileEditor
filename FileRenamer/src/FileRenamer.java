@@ -9,19 +9,19 @@ import java.util.Base64;
 public class FileRenamer {
     public static void main(String[] args) {
 
-        File directory = new File("/path/to/directory");
-        String extension = ".ims";
+        File directory = new File("/Users/anthonyinsalaco/Desktop/asap screen/");
+        String extension = ".lif";
 
-//        String process = "change to base 64";
-        if (process == "change to base 64") {
+        String process = "change to ascii";
+        if (process.equals("change to base 64")) {
             renameFiles(directory, extension, Action.CAPITALIZE_PART1);
             renameFiles(directory, extension, Action.CAPITALIZE_PART2);
             renameFiles(directory, extension, Action.CHANGE_TO_BASE64);
-        } else if (process == "change to ascii") {
-            renameFiles(directory, extension, Action.CHANGE_TO_ASCII;
+        } else if (process.equals("change to ascii")) {
+            renameFiles(directory, extension, Action.CHANGE_TO_ASCII);
         }
     }
-    
+
 
     public static void renameFiles(File directory, String extension, Action action) {
         // Get all files in the directory
@@ -34,20 +34,12 @@ public class FileRenamer {
                     String newFileName = "";
 
                     switch (action) {
-                        case CHANGE_TO_BASE64:
-                            newFileName = asciiToBase64(oldFileName, extension);
-                            break;
-                        case CHANGE_TO_ASCII:
-                            newFileName = base64ToAscii(oldFileName, extension);
-                            break;
-                        case CAPITALIZE_PART1:
-                            newFileName = "a" + oldFileName;
-                            break;
-                        case CAPITALIZE_PART2:
-                            newFileName = capitalizeFileNamePart2(oldFileName, extension);
-                            break;
-                        default:
-                            break;
+                        case CHANGE_TO_BASE64 -> newFileName = asciiToBase64(oldFileName, extension);
+                        case CHANGE_TO_ASCII -> newFileName = base64ToAscii(oldFileName, extension);
+                        case CAPITALIZE_PART1 -> newFileName = "a" + oldFileName;
+                        case CAPITALIZE_PART2 -> newFileName = capitalizeFileNamePart2(oldFileName, extension);
+                        default -> {
+                        }
                     }
 
                     Path sourcePath = file.toPath();
