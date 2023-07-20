@@ -6,45 +6,49 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 
-/**
- * This program renames all files in a directory with the provided extension to Base64.
- * It can also convert Base64 filenames back to ASCII, if needed, by calling the base64ToAscii() method
- * in the main method.
- */
 public class FileRenamer {
     public static void main(String[] args) {
-        String directoryPath = "/Users/anthonyinsalaco/Downloads/asap screen/"; // TODO: Specify the directory path here
-        String extension = ".docx"; // TODO: Specify the file extension here, with the dot included
 
-        File directory = new File(directoryPath);
+        File directory = new File("/path/to/directory");
+        String extension = ".ims";
 
-        String process = "encodeBase64"; // TODO: Specify the process here, either "encodeBase64" or "restoreASCII
-
-        if (process == "encodeBase64") {
-            capitalizeFilesPart1(directory, extension);
-            capitalizeFilesPart2(directory, extension);
-            changeToBase64(directory, extension);
-        } else if (process == "restoreASCII") {
-            changeToASCII(directory, extension);
+//        String process = "change to base 64";
+        if (process == "change to base 64") {
+            renameFiles(directory, extension, Action.CAPITALIZE_PART1);
+            renameFiles(directory, extension, Action.CAPITALIZE_PART2);
+            renameFiles(directory, extension, Action.CHANGE_TO_BASE64);
+        } else if (process == "change to ascii") {
+            renameFiles(directory, extension, Action.CHANGE_TO_ASCII;
         }
-
     }
-    private static void changeToBase64(File directory, String extension) {
+    
 
+    public static void renameFiles(File directory, String extension, Action action) {
         // Get all files in the directory
         File[] files = directory.listFiles();
 
         if (files != null) {
             for (File file : files) {
-
-                // Rename the file only if it is the specified file type
                 if (file.isFile() && file.getName().endsWith(extension)) {
                     String oldFileName = file.getName();
+                    String newFileName = "";
 
-                    // TODO: change the method call from asciiToBase64() to base64ToAscii()
-                    //  if you want to convert Base64 filenames back to ASCII
-
-                    String newFileName = asciiToBase64(oldFileName, extension);
+                    switch (action) {
+                        case CHANGE_TO_BASE64:
+                            newFileName = asciiToBase64(oldFileName, extension);
+                            break;
+                        case CHANGE_TO_ASCII:
+                            newFileName = base64ToAscii(oldFileName, extension);
+                            break;
+                        case CAPITALIZE_PART1:
+                            newFileName = "a" + oldFileName;
+                            break;
+                        case CAPITALIZE_PART2:
+                            newFileName = capitalizeFileNamePart2(oldFileName, extension);
+                            break;
+                        default:
+                            break;
+                    }
 
                     Path sourcePath = file.toPath();
                     Path destinationPath = sourcePath.resolveSibling(newFileName);
@@ -59,130 +63,46 @@ public class FileRenamer {
                     }
                 } else if (file.isDirectory()) {
                     // Recursively process nested directories
-                    changeToBase64(file, extension);
+                    renameFiles(file, extension, action);
                 }
             }
         }
     }
-    private static void changeToASCII(File directory, String extension) {
 
-        // Get all files in the directory
-        File[] files = directory.listFiles();
-
-        if (files != null) {
-            for (File file : files) {
-
-                // Rename the file only if it is the specified file type
-                if (file.isFile() && file.getName().endsWith(extension)) {
-                    String oldFileName = file.getName();
-
-                    String newFileName = base64ToAscii(oldFileName, extension);
-
-                    Path sourcePath = file.toPath();
-                    Path destinationPath = sourcePath.resolveSibling(newFileName);
-
-                    // Rename the file
-                    try {
-                        Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                        System.out.println("File renamed: " + oldFileName + " -> " + newFileName);
-                    } catch (IOException e) {
-                        System.out.println("Failed to rename file: " + oldFileName);
-                        e.printStackTrace();
-                    }
-                } else if (file.isDirectory()) {
-                    // Recursively process nested directories
-                    changeToASCII(file, extension);
-                }
-            }
-        }
-    }
-    private static void capitalizeFilesPart1(File directory, String extension) {
-
-        // Get all files in the directory
-        File[] files = directory.listFiles();
-
-        if (files != null) {
-            for (File file : files) {
-
-                // Rename the file only if it is the specified file type
-                if (file.isFile() && file.getName().endsWith(extension)) {
-                    String oldFileName = file.getName();
-
-                    // first add "a" to the beginning of the file name
-                    String newFileName = "a" + oldFileName;
-                    Path sourcePath = file.toPath();
-                    Path destinationPath = sourcePath.resolveSibling(newFileName);
-
-                    // Rename the file
-                    try {
-                        Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                        System.out.println("File renamed: " + oldFileName + " -> " + newFileName);
-                    } catch (IOException e) {
-                        System.out.println("Failed to rename file: " + oldFileName);
-                        e.printStackTrace();
-                    }
-                } else if (file.isDirectory()) {
-                    // Recursively process nested directories
-                    capitalizeFilesPart1(file, extension);
-                }
-            }
-        }
-    }
-    private static void capitalizeFilesPart2(File directory, String extension) {
-
-        // Get all files in the directory
-        File[] files = directory.listFiles();
-
-        if (files != null) {
-            for (File file : files) {
-
-                // Rename the file only if it is the specified file type
-                if (file.isFile() && file.getName().endsWith(extension)) {
-                    String oldFileName = file.getName();
-
-                    // remove "a" from the beginning of the file name
-                    String newFileName = oldFileName.substring(1);
-
-                    // now, want to capitalize everything in file name but not the .extension
-                    newFileName = newFileName.substring(0, newFileName.lastIndexOf('.')).toUpperCase() + extension;
-                    Path sourcePath = file.toPath();
-                    Path destinationPath = sourcePath.resolveSibling(newFileName);
-
-                    // Rename the file
-                    try {
-                        Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                        System.out.println("File renamed: " + oldFileName + " -> " + newFileName);
-                    } catch (IOException e) {
-                        System.out.println("Failed to rename file: " + oldFileName);
-                        e.printStackTrace();
-                    }
-                } else if (file.isDirectory()) {
-                    // Recursively process nested directories
-                    capitalizeFilesPart2(file, extension);
-                }
-            }
-        }
-    }
+    /**
+     * Convert the file name to base64
+     */
     private static String asciiToBase64(String fileName, String extension) {
-        // Remove the file extension
         String nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-        // Convert the name to Base64
         String base64Name = Base64.getEncoder().encodeToString(nameWithoutExtension.getBytes(StandardCharsets.UTF_8));
-        // Append the file extension back
         return base64Name + extension;
     }
-    public static String base64ToAscii(String base64Filename, String extension) {
-        // Remove the file extension
+
+    /**
+     * Convert the file name from base64 to ascii
+     */
+    private static String base64ToAscii(String base64Filename, String extension) {
         String nameWithoutExtension = base64Filename.substring(0, base64Filename.lastIndexOf('.'));
-
-        // Decode the Base64 string
         byte[] decodedBytes = Base64.getDecoder().decode(nameWithoutExtension.getBytes(StandardCharsets.UTF_8));
-
-        // Convert the decoded bytes to ASCII string
         String asciiFilename = new String(decodedBytes, StandardCharsets.US_ASCII);
-
-        // Append the file extension back
         return asciiFilename + extension;
+    }
+
+    /**
+     * Capitalize the first letter of the file name and remove the first letter of the file name
+     */
+    private static String capitalizeFileNamePart2(String fileName, String extension) {
+        String newFileName = fileName.substring(1);
+        newFileName = newFileName.substring(0, newFileName.lastIndexOf('.')).toUpperCase() + extension;
+        return newFileName;
+    }
+
+    // Enum to represent different actions
+    public enum Action {
+        CHANGE_TO_BASE64,
+        CHANGE_TO_ASCII,
+        CAPITALIZE_PART1,
+        CAPITALIZE_PART2
     }
 
 }
